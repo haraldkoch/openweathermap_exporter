@@ -1,7 +1,7 @@
 # Openweather exporter for prometheus
 
 
-Exporter for openweather API 
+Exporter for openweather API
 
 
 ## Quickstart
@@ -13,7 +13,7 @@ Install dependancies with `go get` and then build the binary.
 ```
 go get -d -v
 go build
-OWM_LOCATION=LONDON,UK  OWM_API_KEY=apikey ./openweathermap_exporter
+SERVER_PORT=2112 OWM_LOCATION=LONDON,UK  OWM_API_KEY=apikey ./openweathermap_exporter
 ```
 
 Then add the scraper in prometheus
@@ -38,6 +38,5 @@ The image is a multistage image, just launch as usual :
 
 ```
 docker build -t ows .
-docker run --rm -e OWM_LOCATION=LONDON,UK  -e OWM_API_KEY=apikey -p 2112:2112 ows
+docker run --rm -e SERVER_PORT=2112 -e OWM_LOCATION=LONDON,UK  -e OWM_API_KEY=apikey -p 2112:2112 ows
 ```
-

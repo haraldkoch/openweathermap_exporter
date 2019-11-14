@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -17,9 +18,9 @@ import (
 type Config struct {
 	pollingInterval time.Duration
 	requestTimeout  time.Duration
-	APIKey          string `env:"OWM_API_KEY"` // APIKey delivered by Openweathermap
-	Location        string `env:"OWM_LOCATION" envDefault:"Lille,FR"`
-	Duration        int    `env:"OWM_DURATION" envDefault:"5"`
+	APIKey          string `env:"OWM_API_KEY"`
+	Location        string `env:"OWM_LOCATION" envDefault:"Amsterdam,NL"`
+	ServerPort      int    `env:"SERVER_PORT" envDefault:"2112"`
 }
 
 func loadMetrics(ctx context.Context, location string) <-chan error {
@@ -35,7 +36,7 @@ func loadMetrics(ctx context.Context, location string) <-chan error {
 					Timeout: cfg.requestTimeout,
 				}
 
-				w, err := owm.NewCurrent("C", "FR", cfg.APIKey, owm.WithHttpClient(client)) // (internal - OpenWeatherMap reference for kelvin) with English output
+				w, err := owm.NewCurrent("C", "en", cfg.APIKey, owm.WithHttpClient(client))
 				if err != nil {
 					errC <- err
 					continue
@@ -58,17 +59,6 @@ func loadMetrics(ctx context.Context, location string) <-chan error {
 				clouds.WithLabelValues(location).Set(float64(w.Clouds.All))
 
 				rain.WithLabelValues(location).Set(w.Rain.ThreeH)
-
-				var scraped_weather = w.Weather[0].Description
-				if scraped_weather ==  last_weather {
-					weather.WithLabelValues(location, scraped_weather).Set(1)
-				} else {
-					weather.WithLabelValues(location, scraped_weather).Set(1)
-					weather.WithLabelValues(location, last_weather).Set(0)
-					last_weather = scraped_weather
-				}
-				log.Println(w.Weather[0].Description)
-				log.Println("scraping OK for ", location)
 			}
 		}
 	}()
@@ -114,24 +104,18 @@ var (
 		Name:      "rain",
 		Help:      "Rain contents 3h",
 	}, []string{"location"})
-	weather = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-    	Namespace: "openweathermap",
-        Name: "weather",
-        Help: "The weather label.",
-    }, []string{"location", "weather"})
-
-    last_weather = ""
 )
 
 func main() {
-
 	env.Parse(&cfg)
+	if cfg.APIKey == "" {
+		log.Fatal("Please provide openWeatherMap API key by setting env var OWM_API_KEY")
+	}
 	prometheus.Register(temp)
 	prometheus.Register(pressure)
 	prometheus.Register(humidity)
 	prometheus.Register(wind)
 	prometheus.Register(clouds)
-	prometheus.Register(weather)
 
 	errC := loadMetrics(context.TODO(), cfg.Location)
 	go func() {
@@ -139,6 +123,8 @@ func main() {
 			log.Println(err)
 		}
 	}()
+
+	log.Printf("Starting openWeatherMap exporter on port %d", cfg.ServerPort)
 	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(":2112", nil)
+	http.ListenAndServe(fmt.Sprintf(":%d", cfg.ServerPort), nil)
 }
