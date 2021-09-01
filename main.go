@@ -50,6 +50,8 @@ func loadMetrics(ctx context.Context, location string) <-chan error {
 
 				temp.WithLabelValues(location).Set(w.Main.Temp)
 
+				feelslike.WithLabelValues(location).Set(w.Main.FeelsLike)
+
 				pressure.WithLabelValues(location).Set(w.Main.Pressure)
 
 				humidity.WithLabelValues(location).Set(float64(w.Main.Humidity))
@@ -74,6 +76,12 @@ var (
 		Namespace: "openweathermap",
 		Name:      "temperature_celsius",
 		Help:      "Temperature in °C",
+	}, []string{"location"})
+
+	feelslike = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace: "openweathermap",
+		Name:      "feelslike_temperature_celsius",
+		Help:      "Apparent Temperature in °C",
 	}, []string{"location"})
 
 	pressure = promauto.NewGaugeVec(prometheus.GaugeOpts{
@@ -112,6 +120,7 @@ func main() {
 		log.Fatal("Please provide openWeatherMap API key by setting env var OWM_API_KEY")
 	}
 	prometheus.Register(temp)
+	prometheus.Register(feelslike)
 	prometheus.Register(pressure)
 	prometheus.Register(humidity)
 	prometheus.Register(wind)
