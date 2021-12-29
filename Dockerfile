@@ -35,6 +35,6 @@ ENTRYPOINT ["/openweathermap_exporter"]
 LABEL maintainer="Harald Koch <harald.koch@gmail.com>" \
       org.opencontainers.image.created=${BUILD_DATE} \
       org.opencontainers.image.revision=${VCS_REF} \
-      org.opencontainers.image.source="https://github.com/haraldkoch/openweathermap_exporter"
-      org.opencontainers.image.title="openweathermap_exporter"
-      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.source="https://github.com/haraldkoch/openweathermap_exporter" \
+      org.opencontainers.image.title="openweathermap_exporter" \
+      org.opencontainers.image.version="${VERSION}"
