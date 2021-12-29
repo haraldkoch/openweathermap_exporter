@@ -1,5 +1,7 @@
 FROM golang:alpine as builder
 
+RUN apk add --no-cache git
+
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 ARG VERSION
@@ -7,7 +9,7 @@ ARG VERSION
 ENV CGO_ENABLED=0 \
     GOPATH=/go \
     GOBIN=/go/bin \
-    GO111MODULE=on
+    GO111MODULE=auto
 
 WORKDIR /workspace
 
@@ -21,7 +23,7 @@ RUN \
   && export GOARM \
   && GOARM=$(echo ${TARGETPLATFORM} | cut -d / -f3 | cut -c2-) \
   && go get -d -v \
-  && go build -o /bin/prometheus-dnssec-exporter -ldflags="-w -s"
+  && go build -o /go/bin/openweathermap_exporter -ldflags="-w -s"
 
 FROM scratch
 
