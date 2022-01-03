@@ -25,14 +25,16 @@ RUN \
   && go get -d -v \
   && go build -o /go/bin/openweathermap_exporter -ldflags="-w -s"
 
-FROM scratch
+
+FROM quay.io/prometheus/busybox:glibc
 
 ARG BUILD_DATE
 ARG VCS_REF
 
-EXPOSE 2112
-COPY --from=builder /go/bin/openweathermap_exporter /openweathermap_exporter
-ENTRYPOINT ["/openweathermap_exporter"]
+COPY --from=builder /go/bin/openweathermap_exporter /bin/openweathermap_exporter
+EXPOSE      2112
+USER        nobody
+ENTRYPOINT  ["/bin/openweathermap_exporter"]
 
 LABEL maintainer="Harald Koch <harald.koch@gmail.com>" \
       org.opencontainers.image.created=${BUILD_DATE} \
