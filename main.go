@@ -50,6 +50,8 @@ func loadMetrics(ctx context.Context, location string) <-chan error {
 
 				temp.WithLabelValues(location).Set(w.Main.Temp)
 
+				dewpoint.WithLabelValues(location).Set(w.Main.Temp - (float64(100 - w.Main.Humidity)/5.0))
+
 				feelslike.WithLabelValues(location).Set(w.Main.FeelsLike)
 
 				pressure.WithLabelValues(location).Set(w.Main.Pressure)
@@ -96,6 +98,12 @@ var (
 		Help:      "Humidity in Percent",
 	}, []string{"location"})
 
+	dewpoint = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace: "openweathermap",
+		Name:      "dewpoint_temperature_celsius",
+		Help:      "Dew Point Temperature in °C",
+	}, []string{"location"})
+       
 	wind = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace: "openweathermap",
 		Name:      "wind_mps",
@@ -107,6 +115,7 @@ var (
 		Name:      "cloudiness_percent",
 		Help:      "Cloudiness in Percent",
 	}, []string{"location"})
+
 	rain = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace: "openweathermap",
 		Name:      "rain",
@@ -123,8 +132,10 @@ func main() {
 	prometheus.Register(feelslike)
 	prometheus.Register(pressure)
 	prometheus.Register(humidity)
+	prometheus.Register(dewpoint)
 	prometheus.Register(wind)
 	prometheus.Register(clouds)
+	prometheus.Register(rain)
 
 	errC := loadMetrics(context.TODO(), cfg.Location)
 	go func() {
