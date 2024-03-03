@@ -1,4 +1,4 @@
-module openweathermap-exporter
+module github.com/haraldkoch/openweathermap-exporter
 
 go 1.20
 
