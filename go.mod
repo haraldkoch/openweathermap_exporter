@@ -1,4 +1,4 @@
-module openweathermap_exporter
+module openweathermap-exporter
 
 go 1.20
 

@@ -13,7 +13,7 @@ Install dependancies with `go get` and then build the binary.
 ```
 go get -d -v
 go build
-SERVER_PORT=2112 OWM_LOCATION=LONDON,UK  OWM_API_KEY=apikey ./openweathermap_exporter
+SERVER_PORT=2112 OWM_LOCATION=LONDON,UK  OWM_API_KEY=apikey ./openweathermap-exporter
 ```
 
 Then add the scraper in prometheus
