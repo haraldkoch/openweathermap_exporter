@@ -71,8 +71,8 @@ func loadMetrics(ctx context.Context, location string) <-chan error {
 
 var (
 	cfg = Config{
-		pollingInterval: 5 * time.Second,
-		requestTimeout:  1 * time.Second,
+		pollingInterval: 30 * time.Second,
+		requestTimeout:  10 * time.Second,
 	}
 	temp = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace: "openweathermap",
