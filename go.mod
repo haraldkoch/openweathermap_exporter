@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/briandowns/openweathermap v0.19.0
 	github.com/caarlos0/env v3.5.0+incompatible
-	github.com/prometheus/client_golang v1.19.0
+	github.com/prometheus/client_golang v1.19.1
 )
 
 require (
@@ -15,6 +15,6 @@ require (
 	github.com/prometheus/common v0.48.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/sys v0.17.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 )
