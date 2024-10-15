@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/briandowns/openweathermap v0.20.0
 	github.com/caarlos0/env v3.5.0+incompatible
-	github.com/prometheus/client_golang v1.20.4
+	github.com/prometheus/client_golang v1.20.5
 )
 
 require (
