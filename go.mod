@@ -3,7 +3,7 @@ module github.com/haraldkoch/openweathermap-exporter
 go 1.20
 
 require (
-	github.com/briandowns/openweathermap v0.21.0
+	github.com/briandowns/openweathermap v0.21.1
 	github.com/caarlos0/env v3.5.0+incompatible
 	github.com/prometheus/client_golang v1.20.5
 )
